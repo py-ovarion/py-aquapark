@@ -9,11 +9,15 @@ class IntegerRange:
             max_amount: int) -> None:
         self.min_amount = min_amount
         self.max_amount = max_amount
+        if self.min_amount  < 0 or self.max_amount < 0:
+            raise ValueError
+        if self.min_amount > self.max_amount:
+            raise ValueError
 
     def __set_name__(self, owner: Any, name: str) -> None:
         self.protected_name = "_" + name
 
-    def __get__(self, instance: Any, owner: Any) -> None:
+    def __get__(self, instance: Any, owner: Any) -> int:
         value = getattr(instance, self.protected_name)
         self.validate(value)
         return value
@@ -26,10 +30,6 @@ class IntegerRange:
     def validate(self, value: int) -> None:
         if not isinstance(value, int):
             raise TypeError
-        if self.min_amount  < 0 or self.max_amount < 0:
-            raise ValueError
-        if self.min_amount > self.max_amount:
-            raise ValueError
         if value not in range(self.min_amount, self.max_amount + 1):
             raise ValueError
 
